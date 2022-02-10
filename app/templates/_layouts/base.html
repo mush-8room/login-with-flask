@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %}{% endblock title %}</title>
+  {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+{{  current_user  }}
+<ul>
+  <li>
+    <a href="{{ url_for('index') }}">Home</a>
+  </li>
+  <li>
+    <a href="{{ url_for('main.public_page') }}">public page</a>
+  </li>
+  <li>
+    <a href="{{ url_for('main.private_page') }}">private page</a>
+  </li>
+  <li>
+    <a href="{{ url_for('main.session_page') }}">session</a>
+  </li>
+  {% if not current_user.id %}
+  <li>
+    <a href="{{ url_for('auth.login') }}">Login</a>
+  </li>
+  {% else %}
+  <li>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>| {{ current_user.email }}
+  </li>
+  {% endif %}
+</ul>
+<hr/>
+<div>
+  {% block main %}{% endblock main %}
+</div>
+
+</body>
+</html>
