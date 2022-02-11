@@ -1,7 +1,7 @@
 from flask import Blueprint, url_for, redirect, request, render_template, current_app
 from flask_login import login_user, logout_user
 
-from app.models import User, user_pool
+from app.proxy import user_repo
 
 auth = Blueprint('auth', __name__)
 
@@ -10,7 +10,6 @@ auth = Blueprint('auth', __name__)
 def login():
     if request.method == 'GET':
         next = request.args.get('next', '')
-        return render_template('auth/login.html', next=next)
 
     else:
         username = request.form.get('username')
@@ -22,20 +21,12 @@ def login():
         if next:
             safe_next_redirect = next
 
-        target_user = None
-        for user in user_pool:
-            if user.get('email') == username and user.get('password') == password:
-                target_user = user
+        user = user_repo.get_by_username(username)
+        if user.password == password:
+            login_user(user)
+            return redirect(safe_next_redirect)
 
-        if not target_user:
-            return render_template('auth/login.html', error='grant failed')
-
-        user = User(target_user.get('id'), target_user.get('email'), target_user.get('name'),
-                    target_user.get('password'))
-
-        login_user(user)
-
-        return redirect(safe_next_redirect)
+    return render_template('auth/login.html', next=next)
 
 
 @auth.route('/logout', methods=['GET', ])

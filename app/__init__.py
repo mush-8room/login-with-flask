@@ -1,16 +1,23 @@
+import os
+
 from flask import Flask, render_template, Blueprint
 
+from app.config import config
+from app.database import db
 from app.extensions import login_manager
 from app.main import main
 from app.auth import auth as auth_bp
-from app.models import User, user_pool
 
 
 def create_app():
     app = Flask(__name__)
-    app.secret_key = 'very-secret'
+
+    app_config = config.get('dev')()
+    app.config.from_object(app_config)
+    app_config.init_app(app)
 
     init_extensions(app)
+    init_db(app)
 
     @app.route('/')
     def index():
@@ -22,17 +29,9 @@ def create_app():
     return app
 
 
+def init_db(app):
+    db.init_app(app)
+
+
 def init_extensions(app):
     login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        target_user = None
-        for user in user_pool:
-            if user.get('id') == user_id:
-                target_user = user
-
-        if target_user:
-            return User(target_user.get('id'), target_user.get('email'), target_user.get('name'),
-                        target_user.get('password'))
-
