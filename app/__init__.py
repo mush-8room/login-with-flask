@@ -24,7 +24,7 @@ def create_app():
         return render_template('index.html')
 
     app.register_blueprint(main, url_prefix="/main")
-    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(auth_bp, )
 
     return app
 
