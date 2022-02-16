@@ -1,6 +1,7 @@
 import abc
 
-from app.models import UserEntity, User
+from app.models import User
+from app.domain.user import UserEntity
 from app.database import db
 
 

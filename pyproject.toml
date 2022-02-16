@@ -15,6 +15,7 @@ requests = "^2.27.1"
 Flask-Migrate = "^3.1.0"
 Flask-Admin = "^1.6.0"
 PyJWT = "^2.3.0"
+Authlib = "^0.15.5"
 
 [tool.poetry.dev-dependencies]
 

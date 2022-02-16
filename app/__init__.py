@@ -1,6 +1,4 @@
-import os
-
-from flask import Flask, render_template, Blueprint
+from flask import Flask, render_template
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
@@ -8,8 +6,10 @@ from app.config import config
 from app.database import db, migrate
 from app.extensions import login_manager
 from app.main import main
+from app.oauth import oauth as oauth_bp
 from app.auth import auth as auth_bp
-from app.models import User, Connection
+from app.models import User, Connection, Token, Client, AuthorizationCode
+from app.oauth.server import oauth_server, query_client, save_token
 
 
 def create_app(config_name='dev'):
@@ -21,6 +21,7 @@ def create_app(config_name='dev'):
 
     init_extensions(app)
     init_db(app)
+    init_oauth(app)
 
     if app.debug:
         init_admin(app)
@@ -31,6 +32,7 @@ def create_app(config_name='dev'):
 
     app.register_blueprint(main, url_prefix="/main")
     app.register_blueprint(auth_bp, )
+    app.register_blueprint(oauth_bp, url_prefix="/oauth")
 
     return app
 
@@ -44,7 +46,14 @@ def init_extensions(app):
     login_manager.init_app(app)
 
 
+def init_oauth(app):
+    oauth_server.init_app(app, query_client=query_client, save_token=save_token)
+
+
 def init_admin(app):
     admin = Admin(app, name='Login With Flask', template_mode='bootstrap3')
     admin.add_view(ModelView(User, db.session))
     admin.add_view(ModelView(Connection, db.session))
+    admin.add_view(ModelView(Client, db.session))
+    admin.add_view(ModelView(Token, db.session))
+    admin.add_view(ModelView(AuthorizationCode, db.session))
