@@ -39,11 +39,11 @@ def login():
             safe_next_redirect = next
 
         user = user_repo.get_by_username(username)
-        if user.password == password:
+        if user and user.password == password:
             login_user(user)
             return redirect(safe_next_redirect)
 
-    return render_template('auth/login.html', next=next)
+    return render_template('auth/login.html', next=next, )
 
 
 @auth.route('/logout', methods=['GET', ])
