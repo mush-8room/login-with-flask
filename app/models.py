@@ -201,6 +201,10 @@ class Token(db.Model, OAuth2TokenMixin):
     def is_refresh_token_valid(self):
         return True
 
+    @property
+    def expires_at(self):
+        return self.get_expires_at()
+
 
 class AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
     id = db.Column(db.Integer, primary_key=True)

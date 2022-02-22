@@ -44,6 +44,7 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
 
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
+    INCLUDE_NEW_REFRESH_TOKEN = True
     TOKEN_ENDPOINT_AUTH_METHODS = [
         'client_secret_basic', 'client_secret_post'
     ]

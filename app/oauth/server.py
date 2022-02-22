@@ -3,6 +3,7 @@ from authlib.integrations.sqla_oauth2 import create_bearer_token_validator
 
 from app.database import db
 from app.models import Client, Token
+from app.oauth.endpoints import IntrospectionEndpoint, RevocationEndpoint
 from app.oauth.grants import AuthorizationCodeGrant, PasswordGrant, RefreshTokenGrant
 
 
@@ -32,11 +33,16 @@ require_oauth = ResourceProtector()
 
 
 def init_oauth(app, db_session):
+    oauth_server.init_app(app, query_client=query_client, save_token=save_token)
+
     oauth_server.register_grant(AuthorizationCodeGrant)
     oauth_server.register_grant(PasswordGrant)
     oauth_server.register_grant(RefreshTokenGrant)
 
-    oauth_server.init_app(app, query_client=query_client, save_token=save_token)
+    oauth_server.register_endpoint(IntrospectionEndpoint)
+    oauth_server.register_endpoint(RevocationEndpoint)
 
     bearer_cls = create_bearer_token_validator(db_session, Token)
     require_oauth.register_token_validator(bearer_cls())
+
+    print(oauth_server._endpoints)

@@ -1,3 +1,6 @@
+{% extends  './_layouts/base.html' %}
+{% block main %}
+
 <h1>Login</h1>
 
 {% if error %}
@@ -16,3 +19,5 @@
 <li><a href="{{ url_for('auth.authorize', target="google") }}">구글 계정으로 로그인하기</a></li>
 <li><a href="{{ url_for('auth.authorize', target="kakao") }}">카카오 계정으로 로그인하기</a></li>
 </ul>
+
+{% endblock %}

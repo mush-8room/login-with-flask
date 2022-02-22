@@ -1,13 +1,16 @@
-import requests
-from flask import Blueprint, url_for, redirect, request, render_template, current_app, abort
-from flask_login import login_user, logout_user
-from urllib.parse import urlunsplit, urlencode
-
-from app.models import User, Connection
-from app.database import db
-from app.proxy import user_repo
 import base64
 import json
+from urllib.parse import urlencode
+
+import requests
+from flask import Blueprint, url_for, redirect, request, render_template, current_app, abort, flash
+from flask_login import login_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from app.auth.form import RegistrationForm
+from app.database import db
+from app.models import User, Connection
+from app.proxy import user_repo
 
 auth = Blueprint('auth', __name__)
 
@@ -21,6 +24,32 @@ def parse_id_token(token: str) -> dict:
     padded = payload + '=' * (4 - len(payload) % 4)
     decoded = base64.b64decode(padded)
     return json.loads(decoded)
+
+
+@auth.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            username = form.data.get('username')
+            password = form.data.get('password')
+            password_confirm = form.data.get('password_confirm')
+
+            user = User()
+            user.email = username
+            user.name = username
+            user.password = generate_password_hash(password, "sha256")
+            db.session.add(user)
+            db.session.commit()
+            login_user(user.to_entity())
+
+            flash('회원 가입이 완료되었습니다.')
+            return redirect(url_for('index'))
+        else:
+            flash('입력하신 값을 확인해주세요')
+
+    return render_template('auth/register.html', form=form)
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -39,7 +68,7 @@ def login():
             safe_next_redirect = next
 
         user = user_repo.get_by_username(username)
-        if user and user.password == password:
+        if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(safe_next_redirect)
 

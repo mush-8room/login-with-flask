@@ -7,6 +7,14 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     REPO_TYPE = 'MEM'
 
+    OAUTH2_REFRESH_TOKEN_GENERATOR = True
+    OAUTH2_TOKEN_EXPIRES_IN = {
+        'authorization_code': 864000,
+        'implicit': 3600,
+        'password': 864000,
+        'client_credentials': 864000
+    }
+
     GOOGLE_REDIRECT_URI = "http://localhost:5000/oauth/callback/google"
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')

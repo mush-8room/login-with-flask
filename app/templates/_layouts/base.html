@@ -23,6 +23,9 @@
   <li>
     <a href="{{ url_for('auth.login') }}">Login</a>
   </li>
+    <li>
+      <a href="{{ url_for('auth.register') }}">회원 가입</a>
+    </li>
   {% else %}
   <li>
     <a href="{{ url_for('auth.logout') }}">Logout</a>| {{ current_user.email }}
@@ -31,6 +34,17 @@
 </ul>
 <hr/>
 <div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
   {% block main %}{% endblock main %}
 </div>
 

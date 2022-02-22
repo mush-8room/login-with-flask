@@ -4,6 +4,7 @@ from authlib.oauth2 import OAuth2Error
 from authlib.integrations.flask_oauth2 import current_token
 
 from app.oauth.server import oauth_server, require_oauth
+from app.oauth.endpoints import IntrospectionEndpoint, RevocationEndpoint
 
 oauth = Blueprint('oauth', __name__)
 
@@ -83,6 +84,15 @@ def authorize():
 def issue_token():
     return oauth_server.create_token_response()
 
+
+@oauth.route('/token/introspect', methods=['POST'])
+def introspect_token():
+    return oauth_server.create_endpoint_response(IntrospectionEndpoint.ENDPOINT_NAME)
+
+
+@oauth.route("/token/revoke", methods=["POST"])
+def revoke_token():
+    return oauth_server.create_endpoint_response(RevocationEndpoint.ENDPOINT_NAME)
 
 # @oauth.route('/me')
 # @require_oauth('profile')
