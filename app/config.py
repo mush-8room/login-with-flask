@@ -15,14 +15,14 @@ class BaseConfig:
         'client_credentials': 864000
     }
 
-    GOOGLE_REDIRECT_URI = "http://localhost:5000/oauth/callback/google"
+    GOOGLE_REDIRECT_URI = os.environ.get('GOOGLE_REDIRECT_URI', "http://localhost:5000/oauth/callback/google")
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
     GOOGLE_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"
     GOOGLE_SCOPE = "openid email profile"
     GOOGLE_AUTHORIZE_ENDPOINT = "https://accounts.google.com/o/oauth2/auth"
 
-    KAKAO_REDIRECT_URI = "http://localhost:5000/oauth/callback/kakao"
+    KAKAO_REDIRECT_URI = os.environ.get('KAKAO_REDIRECT_URI', "http://localhost:5000/oauth/callback/kakao")
     KAKAO_CLIENT_ID = os.environ.get('KAKAO_CLIENT_ID')
     KAKAO_CLIENT_SECRET = os.environ.get('KAKAO_CLIENT_SECRET')
     KAKAO_TOKEN_ENDPOINT = "https://kauth.kakao.com/oauth/token"

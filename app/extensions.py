@@ -1,7 +1,7 @@
-from flask_login import LoginManager
-from urllib.parse import urlunsplit, urlencode
+from urllib.parse import urlencode
 
 from flask import url_for, request, redirect
+from flask_login import LoginManager
 
 from app.proxy import user_repo
 
