@@ -1,0 +1,47 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: auth
+spec:
+  template:
+    metadata:
+      annotations:
+        konghq.com/plugins: api-cors
+    spec:
+      containers:
+      - env:
+        - name: FLASK_ENV
+          value: development
+        - name: FLASK_APP
+          value: wsgi:application
+        - name: GOOGLE_CLIENT_ID
+          value: ""
+        - name: GOOGLE_CLIENT_SECRET
+          value: ""
+        - name: GOOGLE_REDIRECT_URI
+          value: ""
+        - name: KAKAO_CLIENT_ID
+          value: ""
+        - name: KAKAO_CLIENT_SECRET
+          value: ""
+        - name: KAKAO_REDIRECT_URI
+          value: ""
+        - name: OAUTHLIB_INSECURE_TRANSPORT
+          value: "1"
+        - name: DATABASE_URI
+          value: ""
+        image: 125766221427.dkr.ecr.ap-northeast-2.amazonaws.com/study/login-with-flask:0.1.4-1
+        name: user-container
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        readinessProbe:
+          successThreshold: 1
+          tcpSocket:
+            port: 0
+        resources: {}
+      enableServiceLinks: false
+      timeoutSeconds: 300
+  traffic:
+  - latestRevision: true
+    percent: 100
